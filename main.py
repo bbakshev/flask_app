@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import os
 
 
@@ -11,6 +11,11 @@ def index():
     file = os.path.join(img, "img.jpg")
     return render_template(
         "index.html", img=file, content="Let's tackle one problem at a time!")
+
+@app.route("/form_login", methods = ["GET", "POST"])
+def login():
+    if request.method == "POST":
+        return render_template("login.html")
 
 @app.route("/fizzbuzz/<int:num>")
 def fizzBuzz(num):

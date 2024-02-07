@@ -2,16 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
     <title>Login Page</title>
   </head>
   <body>
     <h1>Log In to View the Page</h1>
     <form action="/form_login" method="post">
       <label><strong>Username:</strong></label>
-        <input type="text" name="username"/>
+      <input type="text" name="username" id="username" />
       <label><strong>Password:</strong></label>
-        <input name="password"/>
-      <input type="submit" value="Login"/>
+      <input type="password" id="pwd" />
+      <button type="submit">Sign In</button>
     </form>
+    <script>
+      $("form").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: "/form_login",
+          data: { username: $("#username").val(), password: $("#pwd").val() },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      });
+    </script>
   </body>
 </html>
