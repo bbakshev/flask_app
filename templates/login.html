@@ -16,11 +16,10 @@
       <input type="text" name="username" id="username" />
       <label><strong>Password:</strong></label>
       <input type="password" id="pwd" />
-      <button type="submit">Sign In</button>
+      <button onclick="formSubmit()">Sign In</button>
     </form>
     <script>
-      $("form").submit(function (e) {
-        e.preventDefault();
+      function formSubmit() {
         $.ajax({
           type: "POST",
           url: "/form_login",
@@ -28,7 +27,7 @@
           dataType: "json",
           contentType: "application/json",
         });
-      });
+      };
     </script>
   </body>
 </html>

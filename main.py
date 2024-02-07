@@ -15,7 +15,7 @@ def index():
 @app.route("/form_login", methods = ["GET", "POST"])
 def login():
     if request.method == "POST":
-        return render_template("login.html")
+        return "success"
 
 @app.route("/fizzbuzz/<int:num>")
 def fizzBuzz(num):
