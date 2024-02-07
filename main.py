@@ -16,6 +16,7 @@ def index():
 def login():
     if request.method == "POST":
         return "success"
+    return render_template("login.html")
 
 @app.route("/fizzbuzz/<int:num>")
 def fizzBuzz(num):
@@ -26,3 +27,6 @@ def fizzBuzz(num):
     elif num % 5 == 0:
         return "Buzz"
     return str(num)
+
+if __name__ == '__main__':
+  app.run(host='0.0.0.0', debug=True, threaded=True)

@@ -11,23 +11,24 @@
   </head>
   <body>
     <h1>Log In to View the Page</h1>
-    <form action="/form_login" method="post">
+    <form>
       <label><strong>Username:</strong></label>
       <input type="text" name="username" id="username" />
       <label><strong>Password:</strong></label>
       <input type="password" id="pwd" />
-      <button onclick="formSubmit()">Sign In</button>
+      <button type="button" onclick="formSubmit()">Sign In</button>
     </form>
-    <script>
-      function formSubmit() {
-        $.ajax({
-          type: "POST",
-          url: "/form_login",
-          data: { username: $("#username").val(), password: $("#pwd").val() },
-          dataType: "json",
-          contentType: "application/json",
-        });
-      };
-    </script>
   </body>
+  <script>
+    function formSubmit() {
+      $.ajax({
+        type: "POST",
+        url: "/form_login",
+        data: { username: $("#username").val(), password: $("#pwd").val() },
+        success: function(data) {
+          console.log(data)
+        }
+      });
+    };
+  </script>
 </html>
