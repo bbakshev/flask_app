@@ -14,8 +14,10 @@
     <form>
       <label><strong>Username:</strong></label>
       <input type="text" name="username" id="username" />
+      <p id="username-error"></p>
       <label><strong>Password:</strong></label>
       <input type="password" id="pwd" />
+      <p id="pwd-error"></p>
       <button type="button" onclick="formSubmit()">Sign In</button>
     </form>
   </body>
@@ -27,8 +29,16 @@
         data: { username: $("#username").val(), password: $("#pwd").val() },
         success: function(data) {
           console.log(data)
+          loginCheck(data)
         }
       });
     };
+    function loginCheck(data){
+      if (data["status"] == "fail"){
+        for (let invalid_feedback of data["invalid_fields"]) { 
+        document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
+    }
+  }
+}
   </script>
 </html>
