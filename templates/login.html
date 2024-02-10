@@ -16,8 +16,8 @@
       <input type="text" name="username" id="username" />
       <p id="username-error"></p>
       <label><strong>Password:</strong></label>
-      <input type="password" id="pwd" />
-      <p id="pwd-error"></p>
+      <input type="password" id="password" />
+      <p id="password-error"></p>
       <button type="button" onclick="formSubmit()">Sign In</button>
     </form>
   </body>
@@ -26,7 +26,7 @@
       $.ajax({
         type: "POST",
         url: "/form_login",
-        data: { username: $("#username").val(), password: $("#pwd").val() },
+        data: { username: $("#username").val(), password: $("#password").val() },
         success: function(data) {
           console.log(data)
           loginCheck(data)

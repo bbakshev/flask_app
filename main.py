@@ -20,32 +20,15 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if username != user and password != pwd:
-            return {
-                "status": "fail",
-                "message": "Invalid Inputs",
-                "invalid_fields": [
-                    { 'id': 'username', 'message': 'Username is not valid' },
-                    { 'id': 'pwd', 'message': 'Password is not valid' }
-                ]
-            }
-        elif username != user:
-            return {
-                "status": "fail",
-                "message": "Invalid Inputs",
-                "invalid_fields": [
-                    { 'id': 'username', 'message': 'Username is not valid' }
-                ]
-            }
-        elif password != pwd:
-            return {
-                "status": "fail",
-                "message": "Invalid Inputs",
-                "invalid_fields": [
-                    { 'id': 'pwd', 'message': 'Password is not valid' }
-                ]
-            }
-        return redirect(url_for("youCanViewThis"))
+        invalid_fields = []
+        if username != user:
+            invalid_fields.append({'id': 'username', 'message': 'Username is not valid'})
+        if password != pwd:
+            invalid_fields.append({'id': 'password', 'message': 'Password is not valid'})
+        return {
+                "status": "success" if len(invalid_fields) == 0 else "fail",
+                "invalid_fields": invalid_fields
+        }
     return render_template("login.html")
 
 @app.route("/fizzbuzz/<int:num>")
