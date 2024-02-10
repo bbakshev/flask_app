@@ -20,7 +20,16 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if username != user:
+        if username != user and password != pwd:
+            return {
+                "status": "fail",
+                "message": "Invalid Inputs",
+                "invalid_fields": [
+                    { 'id': 'username', 'message': 'Username is not valid' },
+                    { 'id': 'pwd', 'message': 'Password is not valid' }
+                ]
+            }
+        elif username != user:
             return {
                 "status": "fail",
                 "message": "Invalid Inputs",
@@ -33,7 +42,7 @@ def login():
                 "status": "fail",
                 "message": "Invalid Inputs",
                 "invalid_fields": [
-                    { 'id': 'pwd', 'message': 'Password is not valid' },
+                    { 'id': 'pwd', 'message': 'Password is not valid' }
                 ]
             }
         return redirect(url_for("youCanViewThis"))
