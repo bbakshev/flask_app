@@ -7,8 +7,11 @@
     <title>This is my website</title>
   </head>
   <body>
+    {% if session.username %}
+    You are logged in as {{session.username}} <a href="/logout">Log Out</a>
     <h1>This is my website</h1>
     <p>{{ content }}</p>
     <img src="{{img}}" class="image" />
+    {% endif %}
   </body>
 </html>
