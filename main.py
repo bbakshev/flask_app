@@ -1,4 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import (
+    Flask, 
+    render_template, 
+    request, 
+    redirect, 
+    url_for, 
+    session)
 import os
 
 
@@ -45,7 +51,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("username", None)
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 @app.route("/fizzbuzz/<int:num>")
 def fizzBuzz(num):
