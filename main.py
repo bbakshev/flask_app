@@ -6,6 +6,7 @@ from flask import (
     url_for, 
     session)
 import os
+from models import user
 
 
 app = Flask(__name__)
@@ -23,23 +24,25 @@ def index():
         "index.html", img=file, content="Let's tackle one problem at a time!"
     )
 
-user = "admin"
-pwd = "password"
 
 @app.route("/form_login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        session["username"] = request.form["username"]
-        session["password"] = request.form["password"]
         invalid_fields = []
-        if session["username"] != user:
+        user_account = user.getByUsername(request.form["username"])
+        if user_account is None:
             invalid_fields.append(
-                {"id": "username", "message": "Username is not valid"}
+                {"id": "username", "message": "Username does not exist"}
             )
-        if session["password"] != pwd:
+        if user_account is not None and user_account[3] != request.form["password"]:
             invalid_fields.append(
                 {"id": "password", "message": "Password is not valid"}
             )
+        print(user_account)
+        if len(invalid_fields) == 0:
+            session["username"] = request.form["username"]
+            session["password"] = request.form["password"]
+
         return {
             "status": "success" if len(invalid_fields) == 0 else "fail",
             "invalid_fields": invalid_fields,
@@ -50,7 +53,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
+    session.clear()
     return redirect(url_for("login"))
 
 @app.route("/fizzbuzz/<int:num>")

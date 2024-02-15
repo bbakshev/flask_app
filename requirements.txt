@@ -1,0 +1,9 @@
+certifi==2023.11.17
+distlib==0.3.8
+filelock==3.13.1
+pipenv==2023.11.17
+platformdirs==4.1.0
+setuptools==69.0.3
+virtualenv==20.25.0
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
