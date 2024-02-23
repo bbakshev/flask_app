@@ -24,6 +24,12 @@ def index():
         "index.html", img=file, content="Let's tackle one problem at a time!"
     )
 
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        
+        return render_template("signup.html")
+
 
 @app.route("/form_login", methods=["GET", "POST"])
 def login():
