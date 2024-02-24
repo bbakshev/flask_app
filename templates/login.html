@@ -34,11 +34,14 @@
       });
     };
     function loginCheck(data){
-      if (data["status"] == "fail"){
+      console.log(data)
+      if (data["status"] == "fail") {
         for (let invalid_feedback of data["invalid_fields"]) { 
-        document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
-    }
-  }
+          document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
+        }
+      } else if (data["status"] == "success") {
+        window.location.replace("/")
+      }
 }
   </script>
 </html>

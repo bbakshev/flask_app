@@ -7,11 +7,13 @@ from flask import (
     session)
 import os
 from models import user
+import hashlib
 
 
 app = Flask(__name__)
 # Set secret key
 app.secret_key = "thisIsATest"
+salt = os.environ.get("SALT")
 
 img = os.path.join("static", "images")
 file = os.path.join(img, "img.jpg")
@@ -27,8 +29,8 @@ def index():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        
-        return render_template("signup.html")
+        pass    
+    return render_template("signup.html")
 
 
 @app.route("/form_login", methods=["GET", "POST"])
@@ -40,7 +42,11 @@ def login():
             invalid_fields.append(
                 {"id": "username", "message": "Username does not exist"}
             )
-        if user_account is not None and user_account[3] != request.form["password"]:
+        hashed_string = hashlib.sha256()
+        hashed_string.update((salt + request.form["password"]).encode("utf-8"))
+        hashed_pass = hashed_string.hexdigest()
+        print(hashed_pass)
+        if user_account is not None and user_account[3] != hashed_pass:
             invalid_fields.append(
                 {"id": "password", "message": "Password is not valid"}
             )
@@ -48,14 +54,13 @@ def login():
         if len(invalid_fields) == 0:
             session["username"] = request.form["username"]
             session["password"] = request.form["password"]
-
+            
         return {
             "status": "success" if len(invalid_fields) == 0 else "fail",
             "invalid_fields": invalid_fields,
         }
     else:
-        redirect(url_for("index"))
-    return render_template("login.html")
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():
