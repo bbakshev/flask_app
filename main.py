@@ -51,8 +51,10 @@ def signup():
         hashed_pass = hashed_string.hexdigest()
 
         if len(invalid_fields) == 0:
-            return user.createUser(name, username, hashed_pass)
-        
+            user.createUser(name, username, hashed_pass)
+            return {
+                "status": "success", "message": "Your account has been successfully created",
+            }
         return {
             "status": "success" if len(invalid_fields) == 0 else "fail",
             "invalid_fields": invalid_fields,
