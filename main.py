@@ -29,8 +29,36 @@ def index():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        pass    
-    return render_template("signup.html")
+        invalid_fields = []
+        username = request.form["username"]
+        name = request.form["name"]
+        password = request.form["password"]
+        user_account = user.getByUsername(username)
+
+        if len(username) < 4 or len(username) >= 12:
+            invalid_fields.append({"id": "username", "message": "Username must contain characters between 4 and 12"})
+        if not username.isalnum():
+            invalid_fields.append({"id": "username", "message": "Username may only contain letters and numbers"})
+        if user_account is not None:
+            invalid_fields.append(
+                {"id": "username", "message": "Username already exist"}
+            )
+        if len(password) < 4:
+            invalid_fields.append({"id": "password", "message": "Password length should be not be less than four characters"})
+
+        hashed_string = hashlib.sha256()
+        hashed_string.update((salt + password).encode("utf-8"))
+        hashed_pass = hashed_string.hexdigest()
+
+        if len(invalid_fields) == 0:
+            return user.createUser(name, username, hashed_pass)
+        
+        return {
+            "status": "success" if len(invalid_fields) == 0 else "fail",
+            "invalid_fields": invalid_fields,
+        }
+    else:
+        return render_template("signup.html")
 
 
 @app.route("/form_login", methods=["GET", "POST"])
@@ -59,8 +87,13 @@ def login():
             "status": "success" if len(invalid_fields) == 0 else "fail",
             "invalid_fields": invalid_fields,
         }
-    else:
-        return render_template("login.html")
+    return render_template("login.html")
+
+@app.route("/change_password", methods=["GET", "POST"])
+def change_password():
+    if request.method == "POST":
+        print("Post")
+    return "Password"
 
 @app.route("/logout")
 def logout():

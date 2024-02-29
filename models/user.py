@@ -12,12 +12,24 @@ def getByUsername(username):
 
       return cur.fetchone()
 
-def createUser(username, email, password, name):
+def createUser(name, username, password):
   with psycopg2.connect(os.environ['DATABASE_URL']) as conn:
     with conn.cursor() as cur:
       cur.execute("""
-        INSERT INTO brishna_user
-        VALUES (%s, %s, %s, %s)
-      """, (username, email, password, name,))
+        INSERT INTO brishna_user (name, username, password)
+        VALUES (%s, %s, %s)
+      """, (name, username, password,))
 
       conn.commit() #save data
+
+def changePassword(password):
+  with psycopg2.connect(os.environ['DATABASE_URL']) as conn:
+    with conn.cursor() as cur:
+      cur.execute("""
+        SELECT * FROM brishna_user
+        UPDATE brishna_user
+        SET password = %s
+        WHERE username = %s
+      """, (password,))
+
+      conn.commit()
