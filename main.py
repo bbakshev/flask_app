@@ -33,6 +33,8 @@ def signup():
         username = request.form["username"]
         name = request.form["name"]
         password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
+        print(confirm_password)
         user_account = user.getByUsername(username)
 
         if len(username) < 4 or len(username) >= 12:
@@ -45,6 +47,8 @@ def signup():
             )
         if len(password) < 4:
             invalid_fields.append({"id": "password", "message": "Password length should be not be less than four characters"})
+        if password != confirm_password:
+            invalid_fields.append({"id": "confirm_password", "message": "Passwords must match!"})
 
         hashed_string = hashlib.sha256()
         hashed_string.update((salt + password).encode("utf-8"))
@@ -56,10 +60,10 @@ def signup():
                 "status": "success", "message": "Your account has been successfully created",
             }
         return {
-            "status": "success" if len(invalid_fields) == 0 else "fail",
+            "status": "fail",
             "invalid_fields": invalid_fields,
         }
-    else:
+    if request.method == "GET":
         return render_template("signup.html")
 
 

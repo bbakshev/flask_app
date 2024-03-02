@@ -18,7 +18,9 @@
       <input type="text" name="username" id="username" />
       <p id="username-error"></p>
       <label><strong>Password:</strong></label>
-      <input type="password" id="password" />
+      <input type="password" name="password" id="password" />
+      <label><strong>Confirm Password:</strong></label>
+      <input type="password" name="confirm_password" id="confirm_password" />
       <p id="password-error"></p>
       <button type="button" onclick="formSubmit()">Sign Up</button>
     </form>
@@ -32,6 +34,7 @@
           name: $("#name").val(),
           username: $("#username").val(),
           password: $("#password").val(),
+          confirm_password: $("#confirm_password").val(),
         },
         success: function (data) {
           console.log(data);
