@@ -8,12 +8,14 @@ from flask import (
 import os
 from models import user
 import hashlib
+from postmarker.core import PostmarkClient
 
 
 app = Flask(__name__)
 # Set secret key
 app.secret_key = "thisIsATest"
 salt = os.environ.get("SALT")
+postmark = PostmarkClient(server_token=os.environ.get("POSTMARK_TOKEN"))
 
 img = os.path.join("static", "images")
 file = os.path.join(img, "img.jpg")
@@ -34,7 +36,7 @@ def signup():
         name = request.form["name"]
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
-        print(confirm_password)
+        email = request.form["email"]
         user_account = user.getByUsername(username)
 
         if len(username) < 4 or len(username) >= 12:
@@ -55,10 +57,16 @@ def signup():
         hashed_pass = hashed_string.hexdigest()
 
         if len(invalid_fields) == 0:
-            user.createUser(name, username, hashed_pass)
+            user.createUser(name, username, email, hashed_pass)
             return {
                 "status": "success", "message": "Your account has been successfully created",
             }
+        postmark.emails.send(
+            From="sender@example",
+            To=email,
+            Subject="Required: Email Verification",
+            HtmlBody="<html><body><strong>Hello</strong> Please confirm your email below.</body></html>",
+        )
         return {
             "status": "fail",
             "invalid_fields": invalid_fields,
