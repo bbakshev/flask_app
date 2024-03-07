@@ -62,10 +62,10 @@ def signup():
                 "status": "success", "message": "Your account has been successfully created",
             }
         postmark.emails.send(
-            From="sender@example",
+            From="",
             To=email,
             Subject="Required: Email Verification",
-            HtmlBody="<html><body><strong>Hello</strong> Please confirm your email below.</body></html>",
+            HtmlBody=render_template("verifyemail.html"),
         )
         return {
             "status": "fail",
