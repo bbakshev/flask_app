@@ -40,9 +40,15 @@
           confirm_password: $("#confirm_password").val(),
         },
         success: function (data) {
+          signUpCheck(data)
           console.log(data);
         },
       });
+    }
+    function signUpCheck(data){
+    if (data["status"] == "success") {
+        window.location.replace("/verification_code")
+      }
     }
   </script>
 </html>
