@@ -110,17 +110,23 @@ def emailVerification():
     if request.method == "POST":
         invalid_field = []
         verification = request.form["verification"]
-        print(verification)
         user_code = user.getVerificationCode(verification)
-        print(user_code)
+
         if user_code[4] != verification:
-            invalid_field.append({"id": "verification", "message": "Invalid Code"})
+            invalid_field.append(
+                {
+                    "id": "verification", 
+                    "message": "Invalid Code"
+                }
+            )
         if len(invalid_field) == 0:    
             user.isVerified(user_code[0], True)
-            invalid_field.append({
-                "status": "success",
-                "message": "You are verified",
-            })
+            invalid_field.append(
+                {
+                    "status": "success",
+                    "message": "You are verified",
+                }
+            )
             return redirect(url_for('login'))
 
     return render_template("verification_code.html")
