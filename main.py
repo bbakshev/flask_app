@@ -93,7 +93,7 @@ def signup():
             flash("A confirmation email has been sent via email.")
 
             postmark.emails.send(
-            From="",
+            From="pulsarlearning@pulsarlearning.com",
             To=email,
             Subject="Please confirm your email",
             HtmlBody=html,
@@ -109,29 +109,31 @@ def signup():
     if request.method == "GET":
         return render_template("signup.html")
 
-@app.route("/confirmation/<token>", methods=["GET", "POST"])
+@app.route("/confirmation/<token>", methods=["GET"])
 def emailConfirmation(token):
     invalid_fields = []
     user_verification = user.getVerificationCode(token)
 
-    if user_verification[4] != token:
-        invalid_fields.append(
-                {
-                    "id": "verification", 
-                    "message": "Invalid Code"
-                }
-            )
+    if user_verification:
+        if user_verification[4] != token:
+            invalid_fields.append(
+                    {
+                        "id": "verification", 
+                        "message": "Invalid Code"
+                    }
+                )
     if len(invalid_fields) == 0:
-        user.isVerified(token, True)
-        flash("You are verified")
-        invalid_fields.append(
-                {
-                    "status": "success",
-                    "message": "You are verified",
-                }
-            )
-        return redirect(url_for('login'))
-    return render_template("confirmation.html")
+        if user_verification is not None:
+            user.isVerified(user_verification[0], True)
+            flash("You are verified")
+            invalid_fields.append(
+                    {
+                        "status": "success",
+                        "message": "You are verified",
+                    }
+                )
+            return redirect(url_for('login'))
+    return render_template("confirmation.html", invalid_fields=invalid_fields)
 
 @app.route("/verification_code", methods=["GET", "POST"])
 def emailVerification():
@@ -172,7 +174,6 @@ def login():
         hashed_string.update((salt + request.form["password"]).encode("utf-8"))
         hashed_pass = hashed_string.hexdigest()
 
-        print(hashed_pass)
         if user_account is not None and user_account[3] != hashed_pass:
             invalid_fields.append(
                 {"id": "password", "message": "Password is not valid"}
