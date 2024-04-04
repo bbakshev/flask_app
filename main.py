@@ -88,6 +88,16 @@ def signup():
 
         if len(invalid_fields) == 0:
             user.createUser(name, username, email, hashed_pass, token, is_verified)
+            confirm_url = url_for('emailConfirmation', token=token, _external=True)
+            html = render_template("confirmation.html", confirm_url=confirm_url)
+            flash("A confirmation email has been sent via email.")
+
+            postmark.emails.send(
+            From="",
+            To=email,
+            Subject="Please confirm your email",
+            HtmlBody=html,
+        )
             return {
                 "status": "success",
                 "message": "Your account has been successfully created",
@@ -96,14 +106,32 @@ def signup():
             "status": "fail",
             "invalid_fields": invalid_fields,
         }
-    # postmark.emails.send(
-    #     From="",
-    #     To=email,
-    #     Subject="Required: Email Verification",
-    #     HtmlBody=render_template("verifyemail.html"),
-    # )
     if request.method == "GET":
         return render_template("signup.html")
+
+@app.route("/confirmation/<token>", methods=["GET", "POST"])
+def emailConfirmation(token):
+    invalid_fields = []
+    user_verification = user.getVerificationCode(token)
+
+    if user_verification[4] != token:
+        invalid_fields.append(
+                {
+                    "id": "verification", 
+                    "message": "Invalid Code"
+                }
+            )
+    if len(invalid_fields) == 0:
+        user.isVerified(token, True)
+        flash("You are verified")
+        invalid_fields.append(
+                {
+                    "status": "success",
+                    "message": "You are verified",
+                }
+            )
+        return redirect(url_for('login'))
+    return render_template("confirmation.html")
 
 @app.route("/verification_code", methods=["GET", "POST"])
 def emailVerification():
