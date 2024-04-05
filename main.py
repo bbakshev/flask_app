@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
 from models import user
-import hashlib, secrets, re
+import hashlib, re, uuid
 from postmarker.core import PostmarkClient
 
 
@@ -10,7 +10,6 @@ app = Flask(__name__)
 # Set secret key
 app.secret_key = "thisIsATest"
 salt = os.environ.get("SALT")
-token = secrets.token_hex(2)
 is_verified = False
 postmark = PostmarkClient(server_token=os.environ.get("POSTMARK_TOKEN"))
 email_pattern = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
@@ -37,7 +36,10 @@ def signup():
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
         email = request.form["email"]
+        token = uuid.uuid4()
         user_account = user.getByUsername(username)
+        # user_id = user.retrieveUserId("user_id")
+        # print("User ID:" + str(user_id))
 
         if len(username) < 4 or len(username) >= 12:
             invalid_fields.append(
@@ -87,17 +89,18 @@ def signup():
         hashed_pass = hashed_string.hexdigest()
 
         if len(invalid_fields) == 0:
-            user.createUser(name, username, email, hashed_pass, token, is_verified)
+            user_id = user.createUser(name, username, email, hashed_pass, is_verified)
+            user.createEmailUUID(token, user_id)
             confirm_url = url_for('emailConfirmation', token=token, _external=True)
             html = render_template("confirmation.html", confirm_url=confirm_url)
             flash("A confirmation email has been sent via email.")
 
-            postmark.emails.send(
-            From="pulsarlearning@pulsarlearning.com",
-            To=email,
-            Subject="Please confirm your email",
-            HtmlBody=html,
-        )
+        #     postmark.emails.send(
+        #     From="pulsarlearning@pulsarlearning.com",
+        #     To=email,
+        #     Subject="Please confirm your email",
+        #     HtmlBody=html,
+        # )
             return {
                 "status": "success",
                 "message": "Your account has been successfully created",
