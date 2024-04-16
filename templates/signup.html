@@ -17,6 +17,8 @@
       <label><strong>Username:</strong></label>
       <input type="text" name="username" id="username" />
       <p id="username-error"></p>
+      <label><strong>Email:</strong></label>
+      <input type="text" name="email" id="email" />
       <label><strong>Password:</strong></label>
       <input type="password" name="password" id="password" />
       <label><strong>Confirm Password:</strong></label>
@@ -33,13 +35,20 @@
         data: {
           name: $("#name").val(),
           username: $("#username").val(),
+          email: $("#email").val(),
           password: $("#password").val(),
           confirm_password: $("#confirm_password").val(),
         },
         success: function (data) {
+          signUpCheck(data)
           console.log(data);
         },
       });
+    }
+    function signUpCheck(data){
+    if (data["status"] == "success") {
+        window.location.replace("/form_login")
+      }
     }
   </script>
 </html>
