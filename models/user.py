@@ -60,7 +60,7 @@ def confirmVerificationCode(token):
   with psycopg2.connect(os.environ['DATABASE_URL']) as conn:
     with conn.cursor() as cur:
       cur.execute("""
-          SELECT "userAuthdb".users.user_id, "userAuthdb".users.is_verified, "userAuthdb".email_ver_uuid.email_uuid, 
+          SELECT "userAuthdb".users.user_id, "userAuthdb".users.is_verified, "userAuthdb".email_ver_uuid.email_uuid, "userAuthdb".email_ver_uuid.time_stamp
           FROM "userAuthdb".users
           INNER JOIN "userAuthdb".email_ver_uuid
           ON "userAuthdb".users.user_id = "userAuthdb".email_ver_uuid.user_id
@@ -79,14 +79,23 @@ def isVerified(user_id, verified):
 
       conn.commit() #save data
 
-def changePassword(password):
+def userByEmail(email):
   with psycopg2.connect(os.environ['DATABASE_URL']) as conn:
     with conn.cursor() as cur:
       cur.execute("""
-        SELECT * FROM brishna_user
-        UPDATE brishna_user
+        SELECT user_id, password
+        FROM "userAuthdb".users
+        WHERE email = %s
+      """, (email,))
+      return cur.fetchone()
+
+def resetPassword(user_id, new_password):
+  with psycopg2.connect(os.environ['DATABASE_URL']) as conn:
+    with conn.cursor() as cur:
+      cur.execute("""
+        UPDATE "userAuthdb".users
         SET password = %s
-        WHERE username = %s
-      """, (password,))
+        WHERE user_id = %s
+      """, (new_password, user_id,))
 
       conn.commit()
