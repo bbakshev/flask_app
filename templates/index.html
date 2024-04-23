@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/style.css" />
-    <title>This is my website</title>
-  </head>
-  <body>
-    {% if session.username %}
-    You are logged in as {{session.username}} <a href="/logout">Log Out</a>
-    <h1>This is my website</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+{% if session.username %}
+    <div>You are logged in as {{session.username}} <a href="/logout">Log Out</a></div>
+    <h1>{% block title %} You can view this page{% endblock %}</h1>
     <p>{{ content }}</p>
     <img src="{{img}}" class="image" />
     {% endif %}
-  </body>
-</html>
+{% endblock %}

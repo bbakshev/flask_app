@@ -1,47 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.js"
-      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-      crossorigin="anonymous"
-    ></script>
-    <title>Login Page</title>
-  </head>
-  <body>
-    <h1>Log In to View the Page</h1>
-    <form>
-      <label><strong>Username:</strong></label>
-      <input type="text" name="username" id="username" />
-      <p id="username-error"></p>
-      <label><strong>Password:</strong></label>
-      <input type="password" id="password" />
-      <p id="password-error"></p>
-      <button type="button" onclick="formSubmit()">Sign In</button>
-    </form>
-  </body>
-  <script>
-    function formSubmit() {
-      $.ajax({
-        type: "POST",
-        url: "/form_login",
-        data: { username: $("#username").val(), password: $("#password").val() },
-        success: function(data) {
-          console.log(data)
-          loginCheck(data)
-        }
-      });
-    };
-    function loginCheck(data){
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="/form_login">
+  <label><strong>Username:</strong></label>
+  <input type="text" name="username" id="username" />
+  <p id="username-error"></p>
+  <label><strong>Password:</strong></label>
+  <input type="password" id="password" />
+  <p id="password-error"></p>
+  <button type="button" onclick="formSubmit()">Sign In</button>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function formSubmit() {
+  $.ajax({
+    type: "POST",
+    url: "/form_login",
+    data: { username: $("#username").val(), password: $("#password").val() },
+    success: function(data) {
       console.log(data)
-      if (data["status"] == "fail") {
-        for (let invalid_feedback of data["invalid_fields"]) { 
-          document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
-        }
-      } else if (data["status"] == "success") {
-        window.location.replace("/")
-      }
+      loginCheck(data)
+    }
+  });
+};
+function loginCheck(data){
+  console.log(data)
+  if (data["status"] == "fail") {
+    for (let invalid_feedback of data["invalid_fields"]) { 
+      document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
+    }
+  } else if (data["status"] == "success") {
+    window.location.replace("/")
+  }
 }
-  </script>
-</html>
+</script>
+{% endblock %}
