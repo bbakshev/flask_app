@@ -23,7 +23,7 @@ def index():
     if "username" not in session:
         return redirect(url_for("signup"))
     return render_template(
-        "index.html", img=file, content="Let's tackle one problem at a time!"
+        "index.html", img=file,
     )
 
 
@@ -80,7 +80,6 @@ def signup():
             user.createEmailUUID(token, user_id)
             confirm_url = url_for("emailConfirmation", token=token, _external=True)
             html = render_template("confirmation.html", confirm_url=confirm_url)
-            flash("A confirmation email has been sent via email.", "success")
 
             postmark.emails.send(
                 From="email-signature",
@@ -90,7 +89,7 @@ def signup():
             )
             return {
                 "status": "success",
-                "message": "Your account has been successfully created",
+                "message": "Your account has been successfully created. A link has been emailed to you for account confirmation.",
             }
         return {
             "status": "fail",
@@ -103,28 +102,43 @@ def signup():
 @app.route("/resend-verification-link", methods=["GET", "POST"])
 def resetVerificationLink():
     if request.method == "POST":
+        invalid_fields = []
         email = request.form["email"]
         user_info = user.getByEmail(email)
 
         if user_info is None:
-            flash("The email is not on file, click register to signup", "error")
+            print("no user found")
+            invalid_fields.append(
+                {
+                    "id": "email",
+                    "message": "The email is not on file, click register to signup",
+                }
+            )
         elif user_info and user_info[1] == "false":
             new_token = str(uuid.uuid4())
             user.updateEmailUUID(user_info[0], new_token)
-            confirm_url = url_for(
-                "emailConfirmation", new_token=new_token, _external=True
-            )
-            html = render_template("confirmation.html", confirm_url=confirm_url)
+            # confirm_url = url_for("emailConfirmation", new_token=new_token, _external=True)
+            # html = render_template("confirmation.html", confirm_url=confirm_url)
 
-            postmark.emails.send(
-                From="email-signature",
-                To=email,
-                Subject="Please confirm your email",
-                HtmlBody=html,
+            # postmark.emails.send(
+            #     From="email-signature",
+            #     To=email,
+            #     Subject="Please confirm your email",
+            #     HtmlBody=html,
+            # )
+            invalid_fields.append(
+                {
+                    "id": "email",
+                    "message": "A new email verification has been sent"
+                }
             )
-            flash("A new email verification has been sent", "success")
         else:
-            flash("Your email is already verified", "info")
+            invalid_fields.append(
+                {
+                    "id": "email",
+                    "message": "Your email is already verified"
+                }
+            )
     return render_template("reset_email_verification.html")
 
 
