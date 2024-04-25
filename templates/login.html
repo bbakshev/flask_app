@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div id="border-box">
+<div class="left">
+<h1>Login</h1>
 <form method="POST" action="/form_login">
   <label><strong>Username:</strong></label>
   <input type="text" name="username" id="username" />
@@ -8,8 +11,10 @@
   <label><strong>Password:</strong></label>
   <input type="password" id="password" />
   <p id="password-error"></p>
-  <button type="button" onclick="formSubmit()">Sign In</button>
+  <button class="button" type="button" onclick="formSubmit()">Sign In</button>
 </form>
+</div>
+</div>
 {% endblock %}
 
 {% block javascript %}

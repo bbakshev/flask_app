@@ -1,35 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.js"
-      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-      crossorigin="anonymous"
-    ></script>
-    <title>Registration</title>
-  </head>
-  <body>
-    <form>
-      <label><strong>Name:</strong></label>
-      <input type="text" name="name" id="name" />
-      <label><strong>Username:</strong></label>
-      <input type="text" name="username" id="username" />
-      <p id="username-error"></p>
-      <label><strong>Email:</strong></label>
-      <input type="text" name="email" id="email" />
-      <label><strong>Password:</strong></label>
-      <input type="password" name="password" id="password" />
-      <label><strong>Confirm Password:</strong></label>
-      <input type="password" name="confirm_password" id="confirm_password" />
-      <p id="password-error"></p>
-      <p id="emailSent-error"></p>
-      <button type="button" onclick="formSubmit()">Sign Up</button>
-    </form>
-  </body>
-  <script>
-    function formSubmit() {
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="border-box">
+<div class="left">
+<h1>Register!</h1>
+<form method="POST" action="/signup">
+  <label><strong>Name:</strong></label>
+  <input type="text" name="name" id="name" />
+  <label><strong>Username:</strong></label>
+  <input type="text" name="username" id="username" />
+  <p id="username-error"></p>
+  <label><strong>Email:</strong></label>
+  <input type="text" name="email" id="email" />
+  <label><strong>Password:</strong></label>
+  <input type="password" name="password" id="password" />
+  <label><strong>Confirm Password:</strong></label>
+  <input type="password" name="confirm_password" id="confirm_password" />
+  <p id="password-error"></p>
+  <p id="emailSent-error"></p>
+  <button class="button" type="button" onclick="formSubmit()">Sign Up</button>
+</form>
+</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  function formSubmit() {
       $.ajax({
         type: "POST",
         url: "/signup",
@@ -47,9 +44,14 @@
       });
     }
     function signUpCheck(data){
-    if (data["status"] == "success") {
-        window.location.replace("/form_login")
-      }
+    if (data["status"] == "fail") {
+      for (let invalid_feedback of data["invalid_fields"]){ 
+      document.getElementById(invalid_feedback['id'] + "-error").innerHTML = invalid_feedback["message"]
     }
-  </script>
-</html>
+  } else if (data["status"] == "success") {
+    window.location.replace("/")
+  }
+}
+</script>
+
+{% endblock %}

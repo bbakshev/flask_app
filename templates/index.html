@@ -2,9 +2,11 @@
 
 {% block content %}
 {% if session.username %}
-    <div>You are logged in as {{session.username}} <a href="/logout">Log Out</a></div>
+    <div>Hello {{session.username}}! <a href="/logout">Log Out</a></div><br>
+    <div id="border-box">
     <h1>{% block title %} You can view this page{% endblock %}</h1>
     <p>{{ content }}</p>
     <img src="{{img}}" class="image" />
+</div>
     {% endif %}
 {% endblock %}
