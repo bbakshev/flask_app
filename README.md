@@ -6,6 +6,8 @@
 ## Overview
 This application is a simple user registration and authentication system built using Python Flask and PostgreSQL. It facilitates the registration of users, handles secure password storage, sends email verifications, and manages user sessions for logged-in states.
 
+![img] (img.png)
+
 ## Features
 - **User Registration:** Users can sign up by providing essential information, which is then stored securely in a PostgreSQL database.
 - **Email Verification:** Upon registration, users receive an email with a verification link. Clicking this link verifies their account by updating their status in the database.
